@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  
+    <title>Flowthings Coaster Dashboard</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+    <script type="text/javascript" src="https://gs.ng.bluemix.net:443/js/dojo/dojo.js"></script>
+    <script type="text/javascript" src="scripts/d3.min.js"></script>
+    <script type="text/javascript"src="scripts/liquidFillGauge.js"></script>
+    <script type="text/javascript" src="scripts/flowthings.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="stylesheets/style.css" />
+    <link rel="stylesheet" href="https://gs.ng.bluemix.net:443/js/bluemix_g/css/gamebar.css">
+  </head>
+
+  <body>
+    <div id="gamebar"></div>
+    <div id="outer">
+      
+      <h3>Today:</h3>
+      <svg id="fillgauge"></svg>
+      <div>What is happening here? <a href="/guide">Learn more</a></div>
+      <h3>Previous Days:</h3>
+      <div id="barchart"></div>      
+      <h3>No Coaster Device?</h3>
+      <p>Change the value below to reflect the pressure on the coaster:</p>
+      <input type="text" id="latest" value="{{latest}}"/> <button type="button" id="drink">Go!</button>
+    </div>
+</div>
+  </body>
+
+  <script language="JavaScript">
+
+  $(document).ready(function() {
+
+    // Drink button
+    $("#drink").click(function(){
+      var latest = parseInt($("#latest").val());
+      console.log("latest: " + latest);
+      drinkSome("{{flowUser}}", latest);
+    });
+
+    renderTodaysTotal ( {{today}} );
+
+    renderBarChart ( {{{json drops}}} );
+
+    window.setTimeout(function() { renderIBMGamificationBar ( "{{ibmPlanName}}" , "{{ibmUserId}}" ); }, 500);
+
+    connectFlowWebsockets ( "{{wsHost}}", "{{flowUser}}", "{{tokenString}}", "{{flowId}}" , function(total) {
+      renderTodaysTotal(Math.round(total / {{target}} * 100));
+    });
+  });
+
+  </script>
+
+</html>

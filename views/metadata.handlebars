@@ -1,0 +1,258 @@
+{
+        "testData" : "{\n  \"elems\": {\n\t\t\"weight\" : 150.0\n  }\n}",
+        "nodes" : [ 
+            {
+                "outputs" : [ 
+                    "6e3e7970-f75f-4d68-9d52-371d77e14660"
+                ],
+                "displayName" : "Readings",
+                "id" : "82b0394d-9f8f-4fe2-8db9-8a8b778912a6",
+                "type" : "source",
+                "value" : {
+                    "path" : "/{{account}}/coaster/default",
+                    "var" : "reading"
+                },
+                "coords" : {
+                    "x" : 783,
+                    "y" : 800
+                }
+            }, 
+            {
+                "outputs" : [],
+                "displayName" : "Latest",
+                "id" : "1af39530-3cad-4ffd-b529-c4af2996bf85",
+                "type" : "dest",
+                "value" : {
+                    "path" : "/{{account}}/coaster/latest",
+                    "source" : "reading"
+                },
+                "coords" : {
+                    "x" : 1480,
+                    "y" : 880
+                }
+            }, 
+            {
+                "outputs" : [],
+                "displayName" : "Total Consumed",
+                "id" : "a4ab0ec3-9236-448a-af3d-adc250892d39",
+                "type" : "dest",
+                "value" : {
+                    "path" : "/{{account}}/coaster/total_consumed",
+                    "source" : "updatedDailyTotal"
+                },
+                "coords" : {
+                    "x" : 1480,
+                    "y" : 980
+                }
+            }, 
+            {
+                "outputs" : [ 
+                    "5f214ac9-05df-48e0-8c17-5859a84e703e"
+                ],
+                "displayName" : "Get Previous",
+                "id" : "8d44e297-9e9f-4e41-80f3-c72c93a833c7",
+                "type" : "query",
+                "value" : {
+                    "filter" : "",
+                    "method" : "find",
+                    "var" : "previousDrop",
+                    "service" : "drop",
+                    "limit" : 1,
+                    "id" : "{{latestFlowId}}",
+                    "sort" : "",
+                    "order" : "desc"
+                },
+                "coords" : {
+                    "x" : 1060,
+                    "y" : 800
+                }
+            }, 
+            {
+                "outputs" : [ 
+                    "8d44e297-9e9f-4e41-80f3-c72c93a833c7"
+                ],
+                "displayName" : "Min Filter",
+                "id" : "6e3e7970-f75f-4d68-9d52-371d77e14660",
+                "type" : "condition",
+                "value" : {
+                    "condition" : "reading.elems.weight.value >= 100"
+                },
+                "coords" : {
+                    "x" : 920,
+                    "y" : 800
+                }
+            }, 
+            {
+                "outputs" : [ 
+                    "c31d5de3-dbc8-421b-918e-c49dcdd1e95d"
+                ],
+                "displayName" : "Delta",
+                "id" : "5f214ac9-05df-48e0-8c17-5859a84e703e",
+                "type" : "arbitrary",
+                "value" : {
+                    "var" : "delta",
+                    "js" : "var previousWeight = previousDrop[0] ? previousDrop[0].elems.weight.value : 0\nreturn previousWeight - reading.elems.weight.value;"
+                },
+                "coords" : {
+                    "x" : 1200,
+                    "y" : 800
+                }
+            }, 
+            {
+                "outputs" : [ 
+                    "73ac21f0-5657-49a2-a8bb-8e43df2469a6"
+                ],
+                "displayName" : "POSITIVE FILTER",
+                "id" : "3d134fa6-0b97-4acb-bff4-eceb66f771ee",
+                "type" : "condition",
+                "value" : {
+                    "condition" : "delta > 0"
+                },
+                "coords" : {
+                    "x" : 1020,
+                    "y" : 920
+                }
+            }, 
+            {
+                "outputs" : [ 
+                    "1af39530-3cad-4ffd-b529-c4af2996bf85", 
+                    "3d134fa6-0b97-4acb-bff4-eceb66f771ee"
+                ],
+                "id" : "c31d5de3-dbc8-421b-918e-c49dcdd1e95d",
+                "type" : "split",
+                "coords" : {
+                    "x" : 840,
+                    "y" : 880
+                }
+            }, 
+            {
+                "outputs" : [ 
+                    "35a1c17f-437d-4d05-b7d5-78c0538aee30"
+                ],
+                "displayName" : "Get Total",
+                "id" : "73ac21f0-5657-49a2-a8bb-8e43df2469a6",
+                "type" : "query",
+                "value" : {
+                    "filter" : "fhash == \"${yyyymmdd}\"",
+                    "method" : "find",
+                    "dropId" : "",
+                    "var" : "dayTotal",
+                    "service" : "drop",
+                    "limit" : 1,
+                    "id" : "{{totalFlowId}}",
+                    "sort" : "",
+                    "order" : "desc"
+                },
+                "coords" : {
+                    "x" : 1020,
+                    "y" : 980
+                }
+            }, 
+            {
+                "outputs" : [],
+                "displayName" : "Today's Date",
+                "id" : "eb6eb09c-0bb7-44ea-8861-e211de25caf8",
+                "type" : "config",
+                "value" : {
+                    "var" : "yyyymmdd",
+                    "value" : "(new Date()).toISOString().slice(0,10).replace(/-/g,\"\")"
+                },
+                "coords" : {
+                    "x" : 1400,
+                    "y" : 800
+                }
+            }, 
+            {
+                "outputs" : [ 
+                    "82c27d6c-94d2-432c-98d4-5accef09a31a"
+                ],
+                "displayName" : "Sum Total",
+                "id" : "35a1c17f-437d-4d05-b7d5-78c0538aee30",
+                "type" : "arbitrary",
+                "value" : {
+                    "var" : "updatedDailyTotal",
+                    "js" : "var currentTotal = dayTotal[0] ? dayTotal[0].elems.total.value : 0;\nvar updatedTotal = currentTotal + delta;\n\n\nreturn {\n \tfhash : yyyymmdd,\n  elems : {\n  \tday : yyyymmdd,\n    previousTotal : currentTotal,\n    total : updatedTotal\n  }\n}"
+                },
+                "coords" : {
+                    "x" : 1160,
+                    "y" : 980
+                }
+            }, 
+            {
+                "outputs" : [],
+                "displayName" : "Daily Target",
+                "id" : "dff064b9-c4b4-480b-b866-3dd741f81bac",
+                "type" : "config",
+                "value" : {
+                    "var" : "target",
+                    "value" : "900"
+                },
+                "coords" : {
+                    "x" : 1540,
+                    "y" : 800
+                }
+            }, 
+            {
+                "outputs" : [ 
+                    "1d9ddae2-eb58-4a43-a8c9-a1f9728ec79b"
+                ],
+                "displayName" : "Reached Target?",
+                "id" : "10949ec1-135d-4b5b-b6f6-bf22c13f426e",
+                "type" : "condition",
+                "value" : {
+                    "condition" : "updatedDailyTotal.elems.previousTotal < target && updatedDailyTotal.elems.total >= target"
+                },
+                "coords" : {
+                    "x" : 1300,
+                    "y" : 1060
+                }
+            }, 
+            {
+                "outputs" : [ 
+                    "a4ab0ec3-9236-448a-af3d-adc250892d39", 
+                    "10949ec1-135d-4b5b-b6f6-bf22c13f426e"
+                ],
+                "id" : "82c27d6c-94d2-432c-98d4-5accef09a31a",
+                "type" : "split",
+                "coords" : {
+                    "x" : 1300,
+                    "y" : 980
+                }
+            }, 
+            {
+                "outputs" : [ 
+                    "90e5b542-d3c0-4efc-9037-ef281a5cbfaa"
+                ],
+                "displayName" : "+1 Game XP",
+                "id" : "1d9ddae2-eb58-4a43-a8c9-a1f9728ec79b",
+                "type" : "http",
+                "value" : {
+                    "headers" : [ 
+                        {
+                            "name" : "Content-Type",
+                            "value" : "application/json"
+                        }
+                    ],
+                    "method" : "post",
+                    "var" : "request",
+                    "body" : "{\"eventSource\" : \"Coaster App\", \"uid\" : \"{{gamificationUserId}}\"}",
+                    "url" : "https://gs.ng.bluemix.net/trigger/plan/{{gamificationPlanName}}/event/dailytargethit?key={{gamificationKey}}&tenantId={{gamificationTenantId}}"
+                },
+                "coords" : {
+                    "x" : 1300,
+                    "y" : 1120
+                }
+            }, 
+            {
+                "outputs" : [],
+                "id" : "90e5b542-d3c0-4efc-9037-ef281a5cbfaa",
+                "type" : "null",
+                "value" : {},
+                "coords" : {
+                    "x" : 1480,
+                    "y" : 1120
+                }
+            }
+        ],
+        "version" : 2
+    }

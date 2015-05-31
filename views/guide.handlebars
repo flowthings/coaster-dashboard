@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  
+    <title>Flowthings Coaster Dashboard</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="stylesheets/style.css" />
+    
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>The flowthings.io Drinks Coaster Demo</h1>
+      <p>
+        This is a simple demonstration of the <a href="http://flowthings.io">flowthings.io</a> realtime processing platform. Here we demonstrate the following:
+
+        <ul>
+          <li>How an embedded device can send realtime streaming data to flowthings.io using the flowthings agent</li>
+          <li>Realtime processing in the cloud using flowthings.io</li>
+          <li>Convenient hosting of the dashboard Node.js program on IBM Bluemix</li>
+          <li>Integration with the <a href="https://www.ibm.com/developerworks/community/blogs/6d12aec9-aeea-4b22-95d5-51e02a672bc2">IBM Gamification</a> Bluemix service, which enables levelling-up, badges, and leaderboards for users of the Coaster device. </li>
+        </ul>
+      </p>
+      <h4>The flowthings.io realtime event processing service</h4>
+      <p>
+        We've used flowthings.io to perform processing on every event sent by the drinks coaster to determine the amount of liquids drunk, track daily consumption, and trigger rewards.
+      </p>
+      <p>
+        Developers can write custom JavaScript which is executed in the cloud, on each event. Alternatively, there are visual tools to create the processing pipeline:
+      </p>
+      <p>
+      <img src="images/track_gui.jpg" />
+      </p>
+      <p>
+      The order of processing looks like this:
+      <ol>
+        <li>The input data, called a <a href="https://flowthings.io/docs/drop-object-overview">Drop</a>. All Drops are standard JSON. In this case, the coaster device is using the <a href="https://flowthings.io/docs/flowthings-agent">flowthings Agent</a> to send the current weight atop the coaster.</li>
+        <li>We filter out any data below a threshold. This allows us to ignore events when a cup has been removed from the coaster.</li>
+        <li>A query to find the previous value.</li>
+        <li>Calculate the delta of the current and previous value. This will tell us how much we've drunk / filled up the cup.</li>
+        <li>Send the latest reading to the &quot;Latest&quot; <a href="https://flowthings.io/docs/flow-object-overview">Flow</a>. A Flow is an endpoint to either store or stream events. When the next reading arrives, we will query this Flow.</li>
+        <li>Filter the Delta we calculated. If it is negative, it means we have refilled the cup. We don't care about this value, so ignore it. If it is positive, water has been drunk and we proceed</li>
+        <li>Query the previous total, and add our new value</li>
+        <li>Store the total drunk for today</li>
+        <li>On this reading, did we reached the target for the day? If so, send an HTTP request to trigger an <a href="https://www.ibm.com/developerworks/community/blogs/6d12aec9-aeea-4b22-95d5-51e02a672bc2">IBM Gamification</a> reward event</li>
+      </ol>
+      </p>
+    </div>
+  </body>
+
+
+  <script language="JavaScript">
+
+  </script>
+
+</html>

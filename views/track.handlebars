@@ -1,0 +1,97 @@
+function(__input) {
+  function node_source_0(yyyymmdd, target) {
+    var reading = __input;
+    node_condition_4(yyyymmdd, target, reading);
+  }
+  function node_condition_4(yyyymmdd, target, reading) {
+    if (reading.elems.weight.value >= 100) {
+      node_query_3(yyyymmdd, target, reading);
+    }
+  }
+  function node_query_3(yyyymmdd, target, reading) {
+    var __id = "{{latestFlowId}}";
+    var __opts = {limit: 1, order: "desc"};
+    var previousDrop = Flow.Drop.find(__id, __opts);
+    node_arbitrary_5(yyyymmdd, target, reading, previousDrop);
+  }
+  function node_arbitrary_5(yyyymmdd, target, reading, previousDrop) {
+    var delta = function() {
+      var previousWeight = previousDrop[0] ? previousDrop[0].elems.weight.value : 0
+      return previousWeight - reading.elems.weight.value;
+    }();
+    node_split_7(yyyymmdd, target, reading, previousDrop, delta);
+  }
+  function node_split_7(yyyymmdd, target, reading, previousDrop, delta) {
+    node_dest_1(yyyymmdd, target, reading, previousDrop, delta);
+    node_condition_6(yyyymmdd, target, reading, previousDrop, delta);
+  }
+  function node_dest_1(yyyymmdd, target, reading, previousDrop, delta) {
+    var __p = "/{{account}}/coaster/latest";
+    if (!__drops.hasOwnProperty(__p)) {
+      __drops[__p] = [reading];
+    } else {
+      __drops[__p].push(reading);
+    }
+  }
+  function node_condition_6(yyyymmdd, target, reading, previousDrop, delta) {
+    if (delta > 0) {
+      node_query_8(yyyymmdd, target, reading, previousDrop, delta);
+    }
+  }
+  function node_query_8(yyyymmdd, target, reading, previousDrop, delta) {
+    var __id = "{{totalFlowId}}";
+    var __opts = {filter: "fhash == \"" + (yyyymmdd) + "\"", limit: 1, order: "desc"};
+    var dayTotal = Flow.Drop.find(__id, __opts);
+    node_arbitrary_9(yyyymmdd, target, reading, previousDrop, delta, dayTotal);
+  }
+  function node_arbitrary_9(yyyymmdd, target, reading, previousDrop, delta, dayTotal) {
+    var updatedDailyTotal = function() {
+      var currentTotal = dayTotal[0] ? dayTotal[0].elems.total.value : 0;
+      var updatedTotal = currentTotal + delta;
+      
+      
+      return {
+        fhash : yyyymmdd,
+        elems : {
+          day : yyyymmdd,
+          previousTotal : currentTotal,
+          total : updatedTotal
+        }
+      }
+    }();
+    node_split_11(yyyymmdd, target, reading, previousDrop, delta, dayTotal, updatedDailyTotal);
+  }
+  function node_split_11(yyyymmdd, target, reading, previousDrop, delta, dayTotal, updatedDailyTotal) {
+    node_dest_2(yyyymmdd, target, reading, previousDrop, delta, dayTotal, updatedDailyTotal);
+    node_condition_10(yyyymmdd, target, reading, previousDrop, delta, dayTotal, updatedDailyTotal);
+  }
+  function node_dest_2(yyyymmdd, target, reading, previousDrop, delta, dayTotal, updatedDailyTotal) {
+    var __p = "/{{account}}/coaster/total_consumed";
+    if (!__drops.hasOwnProperty(__p)) {
+      __drops[__p] = [updatedDailyTotal];
+    } else {
+      __drops[__p].push(updatedDailyTotal);
+    }
+  }
+  function node_condition_10(yyyymmdd, target, reading, previousDrop, delta, dayTotal, updatedDailyTotal) {
+    if (updatedDailyTotal.elems.previousTotal < target && updatedDailyTotal.elems.total >= target) {
+      node_http_12(yyyymmdd, target, reading, previousDrop, delta, dayTotal, updatedDailyTotal);
+    }
+  }
+  function node_http_12(yyyymmdd, target, reading, previousDrop, delta, dayTotal, updatedDailyTotal) {
+    var __url = "https://gs.ng.bluemix.net/trigger/plan/{{gamificationPlanName}}/event/dailytargethit?key={{gamificationKey}}&tenantId={{gamificationTenantId}}";
+    var __headers = { "Content-Type": ("application/json") };
+    var __body = "{\"eventSource\" : \"Coaster App\", \"uid\" : \"{{gamificationUserId}}\"}";
+    var request = Flow.Http.post(__url, __headers, __body);
+    node_null_13(yyyymmdd, target, reading, previousDrop, delta, dayTotal, updatedDailyTotal, request)
+  }
+  function node_null_13(yyyymmdd, target, reading, previousDrop, delta, dayTotal, updatedDailyTotal, request) {
+    
+  }
+  var yyyymmdd = (new Date()).toISOString().slice(0,10).replace(/-/g,"");
+  var target = 900;
+  var __drops = {};
+  node_source_0(yyyymmdd, target);
+
+  return __drops;
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  
+    <title>Flowthings Coaster Dashboard</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="stylesheets/style.css" />
+  </head>
+
+  <body>
+    <div id="outer">
+      <div><p>Welcome to the Coaster Demo Dashboard! It looks like your 
+      flowthings application is not set up yet. </p></div>
+
+      <h2> Step 1: Create your IBM Gamification Config </h2>
+      <img src="images/01_new_plan.jpg" class="gamification_screen"/>
+      <p>
+      Go to your app's Bluemix Dashboard, choose "Gamification" and then "New Game Plan". Save your plan then return to the previous screen.
+      </p>
+      <img src="images/02_copy_keys.jpg" class="gamification_screen"/>
+      <p>
+      Copy your and your Key, and paste it below, along with your Plan Name you first and last name.
+      </p>
+      <h2> Step 2: Autogenerate the flowthings.io Application</h2>
+
+
+
+      <form action="/setup" method="POST">
+        <p><label for="planName">PlanName: </label>
+        <input type="text" name="planName" id="planName"/></p>
+        <p><label for="key">Key: </label>
+        <input type="text" name="key" id="key"/></p>
+        <p><label for="firstName">First Name: </label>
+        <input type="text" name="firstName" id="firstName"/></p>
+        <p><label for="lastName">Last Name: </label>
+        <input type="text" name="lastName" id="lastName"/></p>
+        <p><input type="submit" value="Create flowthings Application!"/></p>
+      </form>
+    </div>
+  </body>
+
+
+  <script language="JavaScript">
+
+  </script>
+
+</html>

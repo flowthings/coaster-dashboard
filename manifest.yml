@@ -1,0 +1,12 @@
+applications:
+- disk_quota: 1024M
+  host: flow-drinks-coaster
+  name: flow-drinks-coaster
+  path: .
+  domain: marketplace.flowthings.io
+  instances: 1
+  memory: 256M
+declared-services:
+  drinks-coaster-flowthings-app:
+    label: flowthings
+    plan: free
