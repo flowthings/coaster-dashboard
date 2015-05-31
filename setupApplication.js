@@ -7,7 +7,7 @@ var Promise = require('bluebird'),
   http = require('http'),
   util = require('util'),
   moment = require('moment'),
-  restClient = require('gamiRESTClient'),
+  restClient = require('./gamiRESTClient.js'),
   fs = require('fs'),
   path = require('path');
 
