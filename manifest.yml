@@ -1,3 +1,10 @@
+declared-services:
+  flowthings:
+    label: flowthings
+    plan: free
+  Gamification:
+    label: Gamification
+    plan: public
 applications:
 - disk_quota: 1024M
   host: flow-drinks-coaster
@@ -6,10 +13,6 @@ applications:
   domain: marketplace.flowthings.io
   instances: 1
   memory: 256M
-declared-services:
-  flowthings:
-    label: flowthings
-    plan: free
-  Gamification:
-    label: Gamification
-    plan: public
+  services:
+  - flowthings
+  - Gamification
