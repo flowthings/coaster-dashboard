@@ -7,6 +7,9 @@ applications:
   instances: 1
   memory: 256M
 declared-services:
-  drinks-coaster-flowthings-app:
+  flowthings:
     label: flowthings
     plan: free
+  Gamification:
+    label: Gamification
+    plan: public
