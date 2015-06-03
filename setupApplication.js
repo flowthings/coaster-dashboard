@@ -13,7 +13,6 @@ var Promise = require('bluebird'),
 
 var gamificationProxySetup = false;
 
-
 module.exports = function() {
   return {
 
@@ -38,6 +37,8 @@ module.exports = function() {
       };
 
       var req = http.request(options, function(response) {
+
+        createGamificationEvent(gamificationDetails);
 
         var appDetails = {
           account: creds.account,
@@ -237,3 +238,30 @@ module.exports = function() {
     }
   };
 };
+
+function createGamificationEvent(gamificationDetails){
+  console.log("Creating Gamification Event");
+  var path = "/service/plan/" + gamificationDetails.planName + "/event?key=" + gamificationDetails.key +
+      "&tenantId=" + gamificationDetails.tenantId;
+
+    var options = {
+      hostname: gamificationDetails.host,
+      path: path,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+
+    var req = http.request(options, function(response) {});
+    req.on('error', function(e) {
+      console.log('problem with request: ' + e.message);
+    });
+    req.write(JSON.stringify({
+      "name" : "dailytargethit", 
+      "impacts" : [
+        {"target" : "vars.xp.value", "formula" : "vars.xp.value+1"}
+      ]
+    }));
+    req.end();
+}
