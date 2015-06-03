@@ -48,7 +48,7 @@ module.exports = function() {
           gamificationPlanName: gamificationDetails.planName
         };
 
-        api = flowthings.API(creds, {
+        var api = flowthings.API(creds, {
           transform: flowthings.promisify(Promise)
         });
 
@@ -202,35 +202,37 @@ module.exports = function() {
     getAppConfig: function(app, notreadyf, readyf) {
 
       fs.exists('appConfig.json', function(exists) {
-        if (exists) {
-          var appDetails = require("./appConfig.json");
 
-          /** 
-           *	Set up IBM Gamification Proxy, once.
-           */
-          if (!gamificationProxySetup) {
-            var restConf = restClient.config({
-              gamiHost: appDetails.gamificationHost,
-              tenantId: appDetails.gamificationTenantId,
-              planName: appDetails.gamificationPlanName,
-              key: appDetails.gamificationKey,
-              getLoginUid: function(req) {
-                return appDetails.account;
-              }
-            });
+          try {
+            var appDetails = require("./appConfig.json");
+            /** 
+             *  Set up IBM Gamification Proxy, once.
+             */
+            if (!gamificationProxySetup) {
+              var restConf = restClient.config({
+                gamiHost: appDetails.gamificationHost,
+                tenantId: appDetails.gamificationTenantId,
+                planName: appDetails.gamificationPlanName,
+                key: appDetails.gamificationKey,
+                getLoginUid: function(req) {
+                  return appDetails.account;
+                }
+              });
 
-            console.log("Setting up Gamification: " + JSON.stringify(restConf, null, '\t'));
+              console.log("Setting up Gamification: " + JSON.stringify(restConf, null, '\t'));
 
 
-            app.get("/proxy/*", restClient.proxy(restConf));
-            app.post("/proxy/*", restClient.proxy(restConf));
-            gamificationProxySetup = true;
+              app.get("/proxy/*", restClient.proxy(restConf));
+              app.post("/proxy/*", restClient.proxy(restConf));
+              gamificationProxySetup = true;
+            }
+
+            readyf(appDetails);
+          } catch (err){
+            notreadyf();
           }
 
-          readyf(appDetails);
-        } else {
-          notreadyf();
-        }
+
       });
     }
   };
