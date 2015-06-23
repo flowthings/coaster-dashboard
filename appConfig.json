@@ -1,14 +1,1 @@
-{
-	"account": "drinks_coaster",
-	"gamificationHost": "gs.ng.bluemix.net",
-	"gamificationKey": "00dccefb-c94c-4850-b013-738e060fe120",
-	"gamificationTenantId": "259a5ac0-ed51-487d-a66e-519b5788841a",
-	"gamificationUserId": "drinks_coaster",
-	"gamificationPlanName": "DrinkAchievements",
-	"deviceId": "v556f400468056d1e997d5ff4",
-	"tokenString": "fOSHLTOwlTsgbGVE4dcbLvBfsocP",
-	"totalFlowId": "f556f400468056d1e997d600a",
-	"latestFlowId": "f556f400668056d1e997d6016",
-	"_locals": {},
-	"trackId": "t556f40065bb7091704f6fbc5"
-}
+
